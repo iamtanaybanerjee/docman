@@ -37,8 +37,35 @@ const checkName = async (name) => {
   return true;
 };
 
-const validateFolderUopdateBody = async (body) => {
+const validateUpdateFolderBody = async (body) => {
   const errors = [];
+  if (body.name === "") errors.push("Name should not be empty");
+  else if (body.name) {
+    const nameDoesExist = await checkName(body.name);
+    if (nameDoesExist === true) errors.push("Name already exist");
+  }
+  if (body.type) {
+    if (
+      body.type === "" ||
+      !(
+        body.type === "csv" ||
+        body.type === "pdf" ||
+        body.type === "img" ||
+        body.type === "ppt"
+      )
+    )
+      errors.push(
+        "Type cannot be empty string and should be one of csv, img, pdf, ppt"
+      );
+  }
+  if (
+    body.maxFileLimit <= 0 ||
+    typeof body.maxFileLimit !== "number" ||
+    isNaN(body.maxFileLimit)
+  ) {
+    errors.push("maxFileLimit must be a positive integer");
+  }
+  return errors;
 };
 
-module.exports = { validateFolderBodyParams };
+module.exports = { validateFolderBodyParams, validateUpdateFolderBody };

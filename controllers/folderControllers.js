@@ -1,4 +1,7 @@
-const { validateFolderBodyParams } = require("../validations/validations");
+const {
+  validateFolderBodyParams,
+  validateUpdateFolderBody,
+} = require("../validations/validations");
 const {
   createNewFolder,
   updateExistingFolder,
@@ -23,7 +26,7 @@ const updateFolder = async (req, res) => {
   const body = req.body;
   const folderId = req.params.folderId;
   try {
-    const errors = await validateFolderBodyParams(body);
+    const errors = await validateUpdateFolderBody(body);
     if (errors.length > 0) return res.status(400).json({ errors });
 
     const response = await updateExistingFolder(body, folderId);
