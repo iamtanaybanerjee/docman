@@ -4,11 +4,16 @@ const { uploadFile } = require("../controllers/fileControllers");
 const multer = require("multer");
 const UNEXPECTED_FILE_TYPE = require("../constants/error_constants");
 
-const fileRouter = express.Router();
+const fileRouter = express.Router({ mergeParams: true });
+
+fileRouter.use((req, res, next) => {
+  // console.log("fileRouter middleware - req.params:", req.params); // Should show folderId
+  next();
+});
 
 fileRouter.post(
   "/files",
-  function (req, res, next) {
+  (req, res, next) => {
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         if (err.code === UNEXPECTED_FILE_TYPE.code) {
@@ -18,6 +23,7 @@ fileRouter.post(
       } else if (err) {
         return res.status(500).json({ error: { description: err.message } });
       }
+
       next();
     });
   },

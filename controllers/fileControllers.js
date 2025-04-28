@@ -10,6 +10,7 @@ const uploadFile = async (req, res) => {
   //   const file = req.files[0];
   const file = req.file;
   const description = req.body.description;
+  console.log("file size --->>", file.size / (1024 * 1024));
   try {
     if (
       !req.file ||
@@ -21,27 +22,24 @@ const uploadFile = async (req, res) => {
       });
     }
 
-    console.log("Inside uploadFile - folderId:", folderId);
-    console.log("Inside uploadFile - description:", folderId);
-
-    // const error = await validateFolderId(folderId);
-    // if (error) return res.status(404).json({ error });
+    const error = await validateFolderId(folderId);
+    if (error) return res.status(404).json({ error });
 
     console.log("file.mimetype:", file.mimetype);
 
-    // const errors = await validateFileTypeAndSize(folderId, file);
-    // if (errors.length > 0) return res.status(400).json({ errors });
+    const errors = await validateFileTypeAndSize(folderId, file);
+    if (errors.length > 0) return res.status(400).json({ errors });
 
-    // const error2 = await validateFolderMaxFileLimit(folderId);
-    // if (error2) return res.status(400).json({ error: error2 });
+    const error2 = await validateFolderMaxFileLimit(folderId);
+    if (error2) return res.status(400).json({ error: error2 });
 
     const result = await cloudinaryUpload(file);
-    // const response = await createFile(file, description, folderId);
+    const response = await createFile(file, description, folderId);
 
     return res.status(200).json({
       message: "File uploaded successfully!",
       uploadResult: result,
-      //   response,
+      response,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });

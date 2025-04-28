@@ -112,7 +112,7 @@ const validateFileTypeAndSize = async (folderId, file) => {
 const validateFolderMaxFileLimit = async (folderId) => {
   let error;
   const folderObj = await FolderModel.findOne({ where: { folderId } });
-  const fileObjectList = await FileModel.findAll({ where: folderId });
+  const fileObjectList = await FileModel.findAll({ where: { folderId } });
 
   if (fileObjectList.length === folderObj.maxFileLimit)
     error = "File-limit: Cannot upload as max-file-limit has been reached";

@@ -29,7 +29,7 @@ module.exports = {
         allowNull: false,
       },
       size: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       uploadedAt: {
