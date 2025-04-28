@@ -19,7 +19,7 @@ const createFile = async (file, description, folderId) => {
       name: file.originalname,
       description,
       type: file.mimetype,
-      size: file.size / (1024 * 1024),
+      size: (file.size / (1024 * 1024)).toFixed(2),
     });
     return response;
   } catch (error) {
