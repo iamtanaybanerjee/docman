@@ -5,7 +5,9 @@ const {
   updateFolder,
   deleteFolder,
 } = require("./controllers/folderControllers");
+const { uploadFile } = require("./controllers/fileControllers");
 const { sequelize } = require("./models");
+const fileRouter = require("./router/fileRouter");
 require("pg");
 
 const app = express();
@@ -16,6 +18,7 @@ app.use(cors());
 app.post("/folder/create", createFolder);
 app.put("/folders/:folderId", updateFolder);
 app.delete("/folders/:folderId", deleteFolder);
+app.use("/folders/:folderId", fileRouter);
 
 sequelize
   .authenticate()

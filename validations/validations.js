@@ -1,4 +1,17 @@
-const { Folder: FolderModel } = require("../models");
+const { Folder: FolderModel, File: FileModel } = require("../models");
+
+const mimeToFolderType = {
+  "image/png": "img",
+  "image/jpeg": "img",
+  "image/jpg": "img",
+  "image/webp": "img",
+  "image/gif": "img",
+  "application/pdf": "pdf",
+  "text/csv": "csv",
+  "application/vnd.ms-powerpoint": "ppt",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+    "ppt", // pptx
+};
 
 const validateFolderBodyParams = async (body) => {
   const errors = [];
@@ -68,4 +81,49 @@ const validateUpdateFolderBody = async (body) => {
   return errors;
 };
 
-module.exports = { validateFolderBodyParams, validateUpdateFolderBody };
+const validateFolderId = async (folderId) => {
+  console.log("Inside validateFolderId - folderId:", folderId);
+  let error;
+  const folderObj = await FolderModel.findOne({ where: { folderId } });
+  if (!folderObj) error = `No folder found for id ${folderId}`;
+  return error;
+};
+
+const validateFileTypeAndSize = async (folderId, file) => {
+  const errors = [];
+  try {
+    const fileSizeMB = file.size / (1024 * 1024);
+    const folderObj = await FolderModel.findOne({ where: { folderId } });
+
+    const expectedFolderType = mimeToFolderType[file.mimetype];
+
+    if (expectedFolderType !== folderObj.type)
+      errors.push(
+        `Mismatch: Cannot upload a file type ${expectedFolderType} to a folder type ${folderObj.type}`
+      );
+    if (fileSizeMB > 10) errors.push("File size is greater than 10MB");
+
+    return errors;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const validateFolderMaxFileLimit = async (folderId) => {
+  let error;
+  const folderObj = await FolderModel.findOne({ where: { folderId } });
+  const fileObjectList = await FileModel.findAll({ where: folderId });
+
+  if (fileObjectList.length === folderObj.maxFileLimit)
+    error = "File-limit: Cannot upload as max-file-limit has been reached";
+
+  return error;
+};
+
+module.exports = {
+  validateFolderBodyParams,
+  validateUpdateFolderBody,
+  validateFolderId,
+  validateFileTypeAndSize,
+  validateFolderMaxFileLimit,
+};
