@@ -5,6 +5,7 @@ const {
 const {
   createNewFolder,
   updateExistingFolder,
+  deleteExistingFolder,
 } = require("../services/folderServices");
 
 const createFolder = async (req, res) => {
@@ -42,4 +43,20 @@ const updateFolder = async (req, res) => {
   }
 };
 
-module.exports = { createFolder, updateFolder };
+const deleteFolder = async (req, res) => {
+  const folderId = req.params.folderId;
+  try {
+    const response = await deleteExistingFolder(folderId);
+
+    if (!response.message)
+      return res
+        .status(404)
+        .json({ message: `No folder is found with id ${folderId}` });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { createFolder, updateFolder, deleteFolder };

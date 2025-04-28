@@ -3,6 +3,7 @@ const cors = require("cors");
 const {
   createFolder,
   updateFolder,
+  deleteFolder,
 } = require("./controllers/folderControllers");
 const { sequelize } = require("./models");
 require("pg");
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.post("/folder/create", createFolder);
 app.put("/folders/:folderId", updateFolder);
+app.delete("/folders/:folderId", deleteFolder);
 
 sequelize
   .authenticate()
