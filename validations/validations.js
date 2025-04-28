@@ -4,8 +4,12 @@ const validateFolderBodyParams = async (body) => {
   const errors = [];
   if (!body.name || body.name === "")
     errors.push("Name is required and should not be empty string");
-  const nameDoesExist = await checkName(body.name);
-  if (nameDoesExist === true) errors.push("Name already exist");
+  else {
+    const nameDoesExist = await checkName(body.name);
+    if (nameDoesExist === true) errors.push("Name already exist");
+  }
+
+  // if (nameDoesExist === true) errors.push("Name already exist");
   if (!body.type || body.type === "")
     errors.push("Type is required and must not be an empty string");
   if (
@@ -31,6 +35,10 @@ const checkName = async (name) => {
   const folderObj = await FolderModel.findOne({ where: { name } });
   if (!folderObj) return false;
   return true;
+};
+
+const validateFolderUopdateBody = async (body) => {
+  const errors = [];
 };
 
 module.exports = { validateFolderBodyParams };

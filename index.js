@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const { createFolder } = require("./controllers/folderControllers");
+const {
+  createFolder,
+  updateFolder,
+} = require("./controllers/folderControllers");
 const { sequelize } = require("./models");
 require("pg");
 
@@ -10,6 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/folder/create", createFolder);
+app.put("/folders/:folderId", updateFolder);
 
 sequelize
   .authenticate()
