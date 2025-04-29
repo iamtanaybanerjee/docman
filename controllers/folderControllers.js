@@ -6,6 +6,7 @@ const {
   createNewFolder,
   updateExistingFolder,
   deleteExistingFolder,
+  getFolders,
 } = require("../services/folderServices");
 
 const createFolder = async (req, res) => {
@@ -59,4 +60,17 @@ const deleteFolder = async (req, res) => {
   }
 };
 
-module.exports = { createFolder, updateFolder, deleteFolder };
+const getAllFolders = async (req, res) => {
+  try {
+    const response = await getFolders();
+
+    if (response.length === 0)
+      return res.status(404).json({ message: "No folders are found" });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { createFolder, updateFolder, deleteFolder, getAllFolders };

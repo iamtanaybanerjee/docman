@@ -52,9 +52,19 @@ const deleteExistingFile = async (fileId) => {
   }
 };
 
+const getFiles = async (folderId) => {
+  try {
+    const files = await FileModel.findAll({ where: { folderId } });
+    return files;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   cloudinaryUpload,
   createFile,
   updateFileDescription,
   deleteExistingFile,
+  getFiles,
 };

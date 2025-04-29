@@ -4,6 +4,7 @@ const {
   createFolder,
   updateFolder,
   deleteFolder,
+  getAllFolders,
 } = require("./controllers/folderControllers");
 const { uploadFile } = require("./controllers/fileControllers");
 const { sequelize } = require("./models");
@@ -31,6 +32,7 @@ app.use(
   },
   fileRouter
 );
+app.get("/folders", getAllFolders);
 
 sequelize
   .authenticate()

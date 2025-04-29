@@ -1,4 +1,5 @@
 const { Folder: FolderModel } = require("../models");
+const { getFiles } = require("./fileServices");
 
 const createNewFolder = async (folderObj) => {
   try {
@@ -40,8 +41,30 @@ const deleteExistingFolder = async (folderId) => {
   }
 };
 
+const getFolders = async () => {
+  try {
+    const folderList = await FolderModel.findAll();
+
+    if (folderList.length === 0) return [];
+
+    const folders = [];
+
+    for (let i = 0; i < folderList.length; i++) {
+      const fileList = await getFiles(folderList[i].folderId);
+      folders.push({
+        ...folderList[i].dataValues,
+        files: fileList,
+      });
+    }
+    return folders;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createNewFolder,
   updateExistingFolder,
   deleteExistingFolder,
+  getFolders,
 };
