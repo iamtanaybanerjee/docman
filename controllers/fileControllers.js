@@ -3,6 +3,7 @@ const {
   createFile,
   updateFileDescription,
   deleteExistingFile,
+  getFiles,
 } = require("../services/fileServices");
 const {
   validateFolderId,
@@ -89,4 +90,18 @@ const deleteFile = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, updateFile, deleteFile };
+const getFilesInFolder = async (req, res) => {
+  const folderId = req.params.folderId;
+  try {
+    const files = await getFiles(folderId);
+
+    if (files.length === 0)
+      return res.status(404).json({ message: "No files are found" });
+
+    return res.status(200).json({ files });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { uploadFile, updateFile, deleteFile, getFilesInFolder };
