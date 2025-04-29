@@ -10,7 +10,7 @@ const uploadFile = async (req, res) => {
   //   const file = req.files[0];
   const file = req.file;
   const description = req.body.description;
-  console.log("file size --->>", file.size / (1024 * 1024));
+
   try {
     if (
       !req.file ||
@@ -42,6 +42,7 @@ const uploadFile = async (req, res) => {
       response,
     });
   } catch (error) {
+    console.log("uploadFile error", error);
     return res.status(500).json({ error: error.message });
   }
 };
