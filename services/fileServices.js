@@ -40,4 +40,21 @@ const updateFileDescription = async (fileId, body) => {
   }
 };
 
-module.exports = { cloudinaryUpload, createFile, updateFileDescription };
+const deleteExistingFile = async (fileId) => {
+  try {
+    const response = await FileModel.destroy({ where: { fileId } });
+
+    if (response === 0) return {};
+
+    return { message: "File deleted successfully!" };
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  cloudinaryUpload,
+  createFile,
+  updateFileDescription,
+  deleteExistingFile,
+};

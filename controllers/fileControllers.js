@@ -2,6 +2,7 @@ const {
   cloudinaryUpload,
   createFile,
   updateFileDescription,
+  deleteExistingFile,
 } = require("../services/fileServices");
 const {
   validateFolderId,
@@ -70,4 +71,22 @@ const updateFile = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, updateFile };
+const deleteFile = async (req, res) => {
+  const fileId = req.params.fileId;
+  const folderId = req.params.folderId;
+  try {
+    const error = await validateIfFileExistInFolder(fileId, folderId);
+    if (error) return res.status(400).json({ error });
+
+    const response = await deleteExistingFile(fileId);
+
+    if (!response.message)
+      return res.status(404).json({ error: "File not found" });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { uploadFile, updateFile, deleteFile };
