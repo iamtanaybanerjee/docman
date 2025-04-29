@@ -61,10 +61,23 @@ const getFiles = async (folderId) => {
   }
 };
 
+const sortFiles = async (folderId, sortParam) => {
+  try {
+    const files = await FileModel.findAll({
+      where: { folderId },
+      order: [[sortParam, "ASC"]],
+    });
+    return files;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   cloudinaryUpload,
   createFile,
   updateFileDescription,
   deleteExistingFile,
   getFiles,
+  sortFiles,
 };

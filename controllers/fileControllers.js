@@ -4,6 +4,7 @@ const {
   updateFileDescription,
   deleteExistingFile,
   getFiles,
+  sortFiles,
 } = require("../services/fileServices");
 const {
   validateFolderId,
@@ -104,4 +105,31 @@ const getFilesInFolder = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, updateFile, deleteFile, getFilesInFolder };
+const sortFilesInFolder = async (req, res) => {
+  const folerId = req.params.folderId;
+  const sortParam = req.query.sort;
+  try {
+    const error = await validateFolderId(folerId);
+    if (error)
+      return res
+        .status(404)
+        .json({ message: `No folder found with id ${folerId}` });
+
+    const files = await sortFiles(folerId, sortParam);
+
+    if (files.length === 0)
+      return res.status(404).json({ message: "No files found" });
+
+    return res.status(200).json({ files });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  uploadFile,
+  updateFile,
+  deleteFile,
+  getFilesInFolder,
+  sortFilesInFolder,
+};

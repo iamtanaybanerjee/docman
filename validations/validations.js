@@ -82,9 +82,9 @@ const validateUpdateFolderBody = async (body) => {
 };
 
 const validateFolderId = async (folderId) => {
-  console.log("Inside validateFolderId - folderId:", folderId);
   let error;
   const folderObj = await FolderModel.findOne({ where: { folderId } });
+  console.log();
   if (!folderObj) error = `No folder found for id ${folderId}`;
   return error;
 };

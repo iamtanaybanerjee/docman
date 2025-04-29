@@ -5,6 +5,7 @@ const {
   updateFile,
   deleteFile,
   getFilesInFolder,
+  sortFilesInFolder,
 } = require("../controllers/fileControllers");
 const multer = require("multer");
 const UNEXPECTED_FILE_TYPE = require("../constants/error_constants");
@@ -40,5 +41,7 @@ fileRouter.put("/files/:fileId", updateFile);
 fileRouter.delete("/files/:fileId", deleteFile);
 
 fileRouter.get("/files", getFilesInFolder);
+
+fileRouter.get("/filesBySort", sortFilesInFolder);
 
 module.exports = fileRouter;
