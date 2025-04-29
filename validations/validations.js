@@ -120,10 +120,26 @@ const validateFolderMaxFileLimit = async (folderId) => {
   return error;
 };
 
+const validateIfFileExistInFolder = async (fileId, folderId) => {
+  let error;
+  try {
+    const fileObj = await FileModel.findOne({ where: { fileId } });
+
+    if (!fileObj) error = `No file exist with id ${fileId}`;
+    else if (fileObj.folderId !== folderId)
+      error = "File does not exist in this folder";
+
+    return error;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   validateFolderBodyParams,
   validateUpdateFolderBody,
   validateFolderId,
   validateFileTypeAndSize,
   validateFolderMaxFileLimit,
+  validateIfFileExistInFolder,
 };

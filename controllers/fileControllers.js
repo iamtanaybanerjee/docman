@@ -1,8 +1,13 @@
-const { cloudinaryUpload, createFile } = require("../services/fileServices");
+const {
+  cloudinaryUpload,
+  createFile,
+  updateFileDescription,
+} = require("../services/fileServices");
 const {
   validateFolderId,
   validateFileTypeAndSize,
   validateFolderMaxFileLimit,
+  validateIfFileExistInFolder,
 } = require("../validations/validations");
 
 const uploadFile = async (req, res) => {
@@ -47,4 +52,22 @@ const uploadFile = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile };
+const updateFile = async (req, res) => {
+  const fileId = req.params.fileId;
+  const folderId = req.params.folderId;
+  const body = req.body;
+  try {
+    const error = await validateIfFileExistInFolder(fileId, folderId);
+    if (error) return res.status(400).json({ error });
+
+    const fileObj = await updateFileDescription(fileId, body);
+    return res.status(200).json({
+      message: "File description updated successfully",
+      file: fileObj,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { uploadFile, updateFile };

@@ -1,6 +1,6 @@
 const express = require("express");
 const upload = require("../middleware/multer_config");
-const { uploadFile } = require("../controllers/fileControllers");
+const { uploadFile, updateFile } = require("../controllers/fileControllers");
 const multer = require("multer");
 const UNEXPECTED_FILE_TYPE = require("../constants/error_constants");
 
@@ -29,5 +29,7 @@ fileRouter.post(
   },
   uploadFile
 );
+
+fileRouter.put("/files/:fileId", updateFile);
 
 module.exports = fileRouter;

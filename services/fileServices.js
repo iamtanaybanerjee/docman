@@ -27,4 +27,17 @@ const createFile = async (file, description, folderId) => {
   }
 };
 
-module.exports = { cloudinaryUpload, createFile };
+const updateFileDescription = async (fileId, body) => {
+  try {
+    const fileObj = await FileModel.findOne({ where: { fileId } });
+
+    fileObj.set(body);
+    const updatedFileObj = await fileObj.save();
+
+    return updatedFileObj;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { cloudinaryUpload, createFile, updateFileDescription };
