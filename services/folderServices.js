@@ -1,5 +1,6 @@
-const { Folder: FolderModel } = require("../models");
+const { Folder: FolderModel, File: FileModel } = require("../models");
 const { getFiles } = require("./fileServices");
+const { Op } = require("sequelize");
 
 const createNewFolder = async (folderObj) => {
   try {
@@ -32,6 +33,23 @@ const deleteExistingFolder = async (folderId) => {
     const response = await FolderModel.destroy({ where: { folderId } });
 
     if (response === 0) return {};
+
+    const files = await FileModel.findAll({
+      where: { folderId },
+      attributes: ["fileId"],
+    });
+    const fileIds = [];
+    for (let i = 0; i < files.length; i++) {
+      fileIds.push(files[i].fileId);
+    }
+
+    await FileModel.destroy({
+      where: {
+        fileId: {
+          [Op.in]: fileIds,
+        },
+      },
+    });
 
     return {
       message: "Deleted folder successfully!",
