@@ -44,4 +44,6 @@ fileRouter.get("/files", getFilesInFolder);
 
 fileRouter.get("/filesBySort", sortFilesInFolder);
 
+fileRouter.get("/files/metadata", getFilesInFolder);
+
 module.exports = fileRouter;
