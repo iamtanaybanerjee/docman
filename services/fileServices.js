@@ -1,6 +1,7 @@
 const { uploadToCloudinary } = require("../config/cloudinary");
 const fs = require("fs/promises");
 const { File: FileModel } = require("../models");
+const { Op } = require("sequelize");
 
 const cloudinaryUpload = async (file) => {
   try {
@@ -73,6 +74,21 @@ const sortFiles = async (folderId, sortParam) => {
   }
 };
 
+const getFilesByTypeAcrossFolders = async (type) => {
+  try {
+    const files = await FileModel.findAll({
+      where: {
+        type: {
+          [Op.iLike]: `%${type}%`,
+        },
+      },
+    });
+    return files;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   cloudinaryUpload,
   createFile,
@@ -80,4 +96,5 @@ module.exports = {
   deleteExistingFile,
   getFiles,
   sortFiles,
+  getFilesByTypeAcrossFolders,
 };

@@ -6,6 +6,7 @@ const {
   deleteFolder,
   getAllFolders,
 } = require("./controllers/folderControllers");
+const { getFilesByType } = require("./controllers/fileControllers");
 const { uploadFile } = require("./controllers/fileControllers");
 const { sequelize } = require("./models");
 const fileRouter = require("./router/fileRouter");
@@ -19,7 +20,6 @@ app.use(cors());
 app.post("/folder/create", createFolder);
 app.put("/folders/:folderId", updateFolder);
 app.delete("/folders/:folderId", deleteFolder);
-
 app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
@@ -33,6 +33,7 @@ app.use(
   fileRouter
 );
 app.get("/folders", getAllFolders);
+app.get("/files", getFilesByType);
 
 sequelize
   .authenticate()

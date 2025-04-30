@@ -5,6 +5,7 @@ const {
   deleteExistingFile,
   getFiles,
   sortFiles,
+  getFilesByTypeAcrossFolders,
 } = require("../services/fileServices");
 const {
   validateFolderId,
@@ -126,10 +127,25 @@ const sortFilesInFolder = async (req, res) => {
   }
 };
 
+const getFilesByType = async (req, res) => {
+  const type = req.query.type;
+  try {
+    const files = await getFilesByTypeAcrossFolders(type);
+
+    if (files.length === 0)
+      return res.status(404).json({ message: "No files are found" });
+
+    return res.status(200).json({ files });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   uploadFile,
   updateFile,
   deleteFile,
   getFilesInFolder,
   sortFilesInFolder,
+  getFilesByType,
 };
