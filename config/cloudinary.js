@@ -27,21 +27,52 @@ const generateSignature = (paramsToSign) => {
   return signature;
 };
 
-const uploadToCloudinary = async (filePath) => {
+// const uploadToCloudinary = async (filePath) => {
+//   try {
+//     cloudinaryConfig();
+//     const timestamp = Math.round(new Date().getTime() / 1000);
+//     const paramsToSign = {
+//       timestamp,
+//     };
+
+//     const signature = generateSignature(paramsToSign);
+//     const result = await cloudinary.uploader.upload(filePath, {
+//       ...paramsToSign,
+//       signature,
+//       api_key: process.env.CLOUDINARY_API_KEY,
+//     });
+//     return result;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+const uploadToCloudinary = async (fileBuffer) => {
   try {
     cloudinaryConfig();
     const timestamp = Math.round(new Date().getTime() / 1000);
-    const paramsToSign = {
-      timestamp,
-    };
-
+    const paramsToSign = { timestamp };
     const signature = generateSignature(paramsToSign);
-    const result = await cloudinary.uploader.upload(filePath, {
-      ...paramsToSign,
-      signature,
-      api_key: process.env.CLOUDINARY_API_KEY,
+
+    const result = await cloudinary.uploader.upload_stream(
+      {
+        ...paramsToSign,
+        signature,
+        api_key: process.env.CLOUDINARY_API_KEY,
+      },
+      (error, result) => {
+        if (error) throw error;
+        return result;
+      }
+    );
+
+    // Convert to a Promise
+    return new Promise((resolve, reject) => {
+      const stream = result;
+      stream.on("finish", resolve);
+      stream.on("error", reject);
+      stream.end(fileBuffer); // send the buffer to Cloudinary
     });
-    return result;
   } catch (error) {
     throw error;
   }

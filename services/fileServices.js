@@ -5,7 +5,8 @@ const { Op } = require("sequelize");
 
 const cloudinaryUpload = async (file) => {
   try {
-    let result = await uploadToCloudinary(file.path);
+    // let result = await uploadToCloudinary(file.path);
+    let result = await uploadToCloudinary(file.buffer);
     await fs.unlink(file.path);
     return result;
   } catch (error) {
